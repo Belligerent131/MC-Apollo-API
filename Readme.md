@@ -3,6 +3,7 @@
 Clone this repository, run `npm i` in the root directory. Once finished, create a new file name `.env` and put the following line in the file.
 
 APOLLO_INTROSPECTION=true
+
 APOLLO_PLAYGROUND=true
 
 Next, in the console run `npm build:dev` for hot reloading, or `npm run build:pro` for production.
