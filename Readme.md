@@ -6,5 +6,5 @@ APOLLO_INTROSPECTION=true
 
 APOLLO_PLAYGROUND=true
 
-Next, in the console run `npm build:dev` for hot reloading, or `npm run build:pro` for production.
+Next, in the console run `npm run build:dev` for hot reloading, or `npm run build:pro` for production.
 In a new console window, run: `npm run start:env` this will start the actual server, and you can now see your server running at http://localhost:4000/

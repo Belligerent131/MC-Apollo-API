@@ -1,12 +1,13 @@
 import { ApolloServer } from 'apollo-server';
 
-import resolvers from './resolvers';
-import typeDefs from './type-defs';
+import { graphModules } from './models';
 import { enviroment } from './enviroment';
 
+const { schema, context } = graphModules;
+
 const server = new ApolloServer({
-  resolvers,
-  typeDefs,
+  schema,
+  context,
   introspection: enviroment.apollo.introspection,
   playground: enviroment.apollo.playground,
 });
