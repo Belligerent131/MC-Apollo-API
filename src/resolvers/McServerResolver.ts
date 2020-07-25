@@ -16,7 +16,7 @@ import { McServer } from '../entity/McServer';
 @InputType()
 class McServerInput {
   //Name of the server
-  @Field()
+  @Field() //Decorator for graphql to recognize
   name: string;
 
   //ipAddress of the server
@@ -28,12 +28,12 @@ class McServerInput {
   players: number;
 
   //Port number associated with the server
-  @Field(() => Int)
+  @Field(() => Int) //NOTICE: Graphql doesn't recognize number types. You must specify in the field decorator that basically to use an Int value type
   port: number;
 
   //Specifies if the server is alive
   @Field()
-  alive?: boolean;
+  alive?: boolean; // use ? to specify an input as optional in the schema
 
   //Timestamps
   @Field(() => String, { nullable: true })
@@ -50,9 +50,9 @@ class McServerInput {
 
 //Resolvers handle the API calls through Graphql.
 //Mutations are used to manipulate data, such as create/update/delete
-@Resolver()
+@Resolver() //Specify the Resolver class with the @Resolver decorator
 export class McServerResolver {
-  @Mutation(() => McServer)
+  @Mutation(() => McServer) //Mutations are used as Decorators for manipulating data such as creating, deleting, and updating databases
   async heartbeat(@Arg('options', () => McServerInput) options: McServerInput) {
     options.timeStamp = dayjs().format();
     const heartbeat = await McServer.create(options).save();
