@@ -1,6 +1,11 @@
 import { ObjectType, Field, Int } from 'type-graphql';
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import dayjs from 'dayjs';
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // @ObjectType() specifies to use this data model as a schema model
 // for GraphQL
@@ -44,6 +49,6 @@ export class McServer extends BaseEntity {
   alive?: boolean;
 
   @Field()
-  @Column('text', { nullable: true, default: dayjs().format() }) //This uses the dayjs dependancy to generate timestamps
+  @UpdateDateColumn({ nullable: false }) //This uses the dayjs dependancy to generate timestamps
   timeStamp: string;
 }

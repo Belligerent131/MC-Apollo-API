@@ -4,6 +4,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { McServerResolver } from './resolvers/McServerResolver';
+import { UserResolver } from './resolvers/UserResolver';
 
 (async () => {
   try {
@@ -16,7 +17,7 @@ import { McServerResolver } from './resolvers/McServerResolver';
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [McServerResolver],
+        resolvers: [McServerResolver, UserResolver],
         validate: true,
       }),
       context: ({ req, res }) => ({ req, res }),

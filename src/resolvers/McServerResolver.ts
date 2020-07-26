@@ -1,67 +1,134 @@
-import {
-  InputType,
-  Field,
-  Int,
-  Resolver,
-  Mutation,
-  Arg,
-  Query,
-} from 'type-graphql';
-import dayjs from 'dayjs';
+import { Query, InputType, Field, Int, Mutation, Arg } from 'type-graphql';
 import { McServer } from '../entity/McServer';
+import { Error } from './shareable';
 
-// Acts like a interface for Graphql
-// Define the input that are available/required
-// Question mark ? delimiter specifies nullable types
+//Input Types
 @InputType()
 class McServerInput {
-  //Name of the server
-  @Field() //Decorator for graphql to recognize
+  @Field()
   name: string;
 
-  //ipAddress of the server
   @Field()
   ipAddress: string;
 
-  //Number of players active on the server
-  @Field(() => Int)
-  players: number;
-
-  //Port number associated with the server
-  @Field(() => Int) //NOTICE: Graphql doesn't recognize number types. You must specify in the field decorator that basically to use an Int value type
-  port: number;
-
-  //Specifies if the server is alive
-  @Field()
-  alive?: boolean; // use ? to specify an input as optional in the schema
-
-  //Timestamps
-  @Field(() => String, { nullable: true })
-  timeStamp: string;
-
-  //Referenced name of the Server Jar file
   @Field()
   jarFile: string;
 
-  //Referenced directory of the server Jar file
   @Field()
   directory: string;
+
+  @Field(() => Int)
+  port: number;
+
+  @Field(() => Int)
+  players: number;
+
+  @Field(() => Boolean, { defaultValue: false })
+  alive?: boolean;
 }
 
-//Resolvers handle the API calls through Graphql.
-//Mutations are used to manipulate data, such as create/update/delete
-@Resolver() //Specify the Resolver class with the @Resolver decorator
-export class McServerResolver {
-  @Mutation(() => McServer) //Mutations are used as Decorators for manipulating data such as creating, deleting, and updating databases
-  async heartbeat(@Arg('options', () => McServerInput) options: McServerInput) {
-    options.timeStamp = dayjs().format();
-    const heartbeat = await McServer.create(options).save();
-    return heartbeat;
-  }
+@InputType()
+class McServerUpdate {
+  @Field(() => Int)
+  id: number;
 
-  // Queries deal with data retrieval of GraphQL api handles
-  @Query(() => [McServer])
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field({ nullable: true })
+  ipAddress?: string;
+
+  @Field({ nullable: true })
+  jarFile?: string;
+
+  @Field({ nullable: true })
+  directory?: string;
+
+  @Field(() => Int, { nullable: true })
+  port?: number;
+
+  @Field(() => Int, { nullable: true })
+  players?: number;
+
+  @Field(() => Boolean, { defaultValue: false, nullable: true })
+  alive?: boolean;
+}
+
+export class McServerResolver {
+  //Queries
+  @Query(() => [McServer!], { nullable: true })
   getServers() {
     return McServer.find();
   }
+
+  //Mutations
+  @Mutation(() => [Error!], { nullable: true })
+  async createServer(
+    @Arg('option', () => McServerInput) options: McServerInput
+  ) {
+    const portExists = await McServer.findOne({
+      where: { port: options.port },
+      select: ['id'],
+    });
+    const directoryExists = await McServer.findOne({
+      where: { directory: options.directory },
+      select: ['id'],
+    });
+
+    if (portExists) {
+      return [{ path: 'port', message: 'already in use...' }];
+    }
+
+    if (directoryExists) {
+      return [{ path: 'directory', message: 'already in use...' }];
+    }
+
+    await McServer.create(options).save();
+
+    return null;
+  }
+
+  @Mutation(() => [Error!], { nullable: true })
+  async deleteServer(@Arg('id', () => Int) id: number) {
+    const serverExist = await McServer.findOne({ where: { id: id } });
+
+    if (serverExist) {
+      await McServer.delete(id);
+
+      return null;
+    }
+
+    return [{ path: 'Exists?', message: "the ip specified doesn't exists" }];
+  }
+
+  @Mutation(() => [Error!], { nullable: true })
+  async updateServer(
+    @Arg('options', () => McServerUpdate) options: McServerUpdate
+  ) {
+    const serverExists = await McServer.findOne({ where: { id: options.id } });
+
+    if (!serverExists) {
+      return [{ path: 'Server', message: 'Server Not found!' }];
+    }
+
+    McServer.update(options.id, options);
+    return null;
+  }
+
+  @Mutation(() => Boolean, { nullable: false })
+  async heartbeat(
+    @Arg('port', () => Int) port: number,
+    @Arg('players', () => Int) players: number
+  ) {
+    const portExists = await McServer.findOne({ where: { port: port } });
+    if (!portExists) {
+      McServer.update({ port: port }, { alive: false, players: 0 });
+      return false;
+    } else {
+      McServer.update({ port: port }, { alive: true, players: players });
+      return true;
+    }
+  }
+
+  //Subscriptions
 }

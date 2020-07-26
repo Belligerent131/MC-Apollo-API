@@ -5,7 +5,7 @@ module.exports = [
     server: 'localhost',
     username: 'lanfest',
     password: 'lanfest',
-    database: 'mcLanfest',
+    database: 'McLanfest',
     //database: "database.sqlite",
     synchronize: true,
     logging: true,
@@ -21,9 +21,13 @@ module.exports = [
   {
     name: 'production',
     type: 'postgres',
-    url: process.env.DATABASE_URL,
+    url: 'localhost',
+    username: 'lanfest',
+    password: 'lanfest',
+    database: 'McLanfestProduction',
     synchronize: true, // switch this to false once you have the initial tables created and use migrations instead
     logging: false,
+    dropSchema: true,
     entities: ['dist/entity/**/*.js'],
     migrations: ['dist/migration/**/*.js'],
     subscribers: ['dist/subscriber/**/*.js'],
