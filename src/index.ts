@@ -5,10 +5,26 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { McServerResolver } from './resolvers/McServerResolver';
 import { UserResolver } from './resolvers/UserResolver';
+import ConstructServer from './ServerManagement/ConstructServer';
 
 (async () => {
   try {
+    // var minecraftServerProcess = spawn(
+    //   'java',
+    //   ['-Xmx512M', '-Xms256M', '-jar', 'server.jar', 'nogiu'],
+    //   { cwd: 'Pool' }
+    // );
+
+    // function log(data: any) {
+    //   process.stdout.write(data.toString());
+    // }
+
+    // minecraftServerProcess.stdout.on('data', log);
+    // minecraftServerProcess.stderr.on('data', log);
+
     const app = express();
+    var newServer = new ConstructServer('test123', 4454, 'test.jar', 'test123');
+    newServer.genrateDirectory();
 
     const options = await getConnectionOptions(
       process.env.NODE_ENV || 'development'
