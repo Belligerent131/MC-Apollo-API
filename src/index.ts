@@ -5,7 +5,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { McServerResolver } from './resolvers/McServerResolver';
 import { UserResolver } from './resolvers/UserResolver';
-import ConstructServer from './ServerManagement/ConstructServer';
+// import ConstructServer from './ServerManagement/ConstructServer';
 
 (async () => {
   try {
@@ -23,8 +23,8 @@ import ConstructServer from './ServerManagement/ConstructServer';
     // minecraftServerProcess.stderr.on('data', log);
 
     const app = express();
-    var newServer = new ConstructServer('test123', 4454, 'test.jar', 'test123');
-    newServer.genrateDirectory();
+    //var newServer = new ConstructServer('test123', 4454, 'test.jar', 'test123');
+    //await newServer.genrateDirectory();
 
     const options = await getConnectionOptions(
       process.env.NODE_ENV || 'development'

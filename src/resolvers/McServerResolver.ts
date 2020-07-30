@@ -1,6 +1,7 @@
 import { Query, InputType, Field, Int, Mutation, Arg } from 'type-graphql';
 import { McServer } from '../entity/McServer';
 import { Error } from './shareable';
+import ConstructServer from '../ServerManagement/ConstructServer';
 
 //Input Types
 @InputType()
@@ -8,8 +9,8 @@ class McServerInput {
   @Field()
   name: string;
 
-  @Field()
-  ipAddress: string;
+  @Field(() => String, { defaultValue: '127.0.0.1' })
+  ipAddress?: string;
 
   @Field()
   jarFile: string;
@@ -20,8 +21,8 @@ class McServerInput {
   @Field(() => Int)
   port: number;
 
-  @Field(() => Int)
-  players: number;
+  @Field(() => Int, { defaultValue: 0 })
+  players?: number;
 
   @Field(() => Boolean, { defaultValue: false })
   alive?: boolean;
@@ -85,6 +86,14 @@ export class McServerResolver {
 
     await McServer.create(options).save();
 
+    await new ConstructServer(
+      options.name,
+      options.port,
+      options.jarFile,
+      options.directory,
+      options.ipAddress
+    ).genrateDirectory();
+
     return null;
   }
 
@@ -98,7 +107,7 @@ export class McServerResolver {
       return null;
     }
 
-    return [{ path: 'Exists?', message: "the ip specified doesn't exists" }];
+    return [{ path: 'Exists?', message: "the id specified doesn't exists" }];
   }
 
   @Mutation(() => [Error!], { nullable: true })
