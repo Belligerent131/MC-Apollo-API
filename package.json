@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@types/fs-extra": "^9.0.1",
-    "apollo-server-express": "^2.9.9",
+    "apollo-server-express": "^2.24.1",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.8.30",
     "express": "^4.17.1",
