@@ -13,7 +13,7 @@
     "typescript": "3.7.2"
   },
   "dependencies": {
-    "@types/fs-extra": "^9.0.1",
+    "@types/fs-extra": "^9.0.12",
     "apollo-server-express": "^2.9.9",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.8.30",
