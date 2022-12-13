@@ -17,7 +17,7 @@
     "apollo-server-express": "^2.9.9",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.8.30",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "forever": "^3.0.0",
     "fs-extra": "^9.0.1",
     "graphql": "^14.5.8",
